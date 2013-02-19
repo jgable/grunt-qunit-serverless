@@ -1,0 +1,6 @@
+<section>
+	<header>What up my friends</header>
+	<p>
+		This is {{name}} reporting live from template 1.
+	</p>
+</section>

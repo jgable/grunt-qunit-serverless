@@ -1,0 +1,30 @@
+{
+  "name": "grunt-qunit-serverless",
+  "version": "0.0.1",
+  "description": "A serverless version of the grunt-qunit task",
+  "main": "tasks/qunit-serverless.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jgable/grunt-qunit-serverless.git"
+  },
+  "keywords": [
+    "grunt",
+    "qunit",
+    "serverless"
+  ],
+  "author": "Jacob Gable <jacob.gable@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.1.1",
+    "should": "~1.2.1",
+    "phantom": "~0.4.1"
+  },
+  "dependencies": {
+    "grunt": "~0.4.0",
+    "node-uuid": "~1.4.0",
+    "grunt-lib-phantomjs": "~0.1.0"
+  }
+}
