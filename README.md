@@ -1,4 +1,4 @@
-grunt-qunit-serverless [![Build Status](https://secure.travis-ci.org/jgable/grunt-qunit-serverless.png)](http://travis-ci.org/jgable/grunt-qunit-serverless)
+grunt-qunit-serverless [![Build Status](https://travis-ci.org/jgable/grunt-qunit-serverless.png?branch=master)](https://travis-ci.org/jgable/grunt-qunit-serverless)
 ======================
 
 A serverless version of the [grunt-contrib-qunit](https://github.com/gruntjs/grunt-contrib-qunit) task.  The intent of this task is to be able to run your [qunit](http://qunitjs.com/) tests without spinning up a web server.
