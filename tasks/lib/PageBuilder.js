@@ -13,6 +13,9 @@ var PageBuilder = function(opts) {
 	IncludesBase.call(this);
 
 	this.opts = _.defaults({}, opts, this._includeDefaults());
+
+	this.idtag = uuid.v1();
+	this.tmpDir = os.tmpDir();
 };
 
 _.extend(PageBuilder.prototype, IncludesBase.prototype);
@@ -22,17 +25,31 @@ _.extend(PageBuilder.prototype, {
 		return grunt.file.read(path);
 	},
 
+	_writeFile: function(path, contents) {
+		grunt.file.write(path, contents);
+	},
+
+	_getTempJsAssetPath: function(assetType, name) {
+		return path.join(this.tmpDir, this.idtag, "js", assetType, name);
+	},
+
 	_getTempFilePath: function() {
-		return path.join(os.tmpDir(), "qsvl-" + uuid.v1() + ".html");
+		var filePath = path.join(this.tmpDir, this.idtag, "qunit-tests.html");
+
+		// To ensure the existence of the directory
+		grunt.file.write(filePath, "");
+
+		return filePath;
 	},
 
 	build: function(done) {
 		var self = this,
 			opts = this.opts,
 			qunitPage = _.template(grunt.file.read(opts.pageTemplate)),
-			qunitStyle = grunt.file.read(opts.qunitCss),
-			qunitScript = grunt.file.read(opts.qunitJs),
-			qunitBridgeScript = grunt.file.read(opts.qunitBridge),
+			// Yeah, I know, this is cheating
+			qunitStyle = this._getTempJsAssetPath("qunit", "qunit.css"),
+			qunitScript = this._getTempJsAssetPath("qunit", "qunit.js"),
+			qunitBridgeScript = this._getTempJsAssetPath("qunit", "qunitBridge.js"),
 			includeFiles = [],
 			testFiles = [],
 			templateFiles = [],
@@ -52,21 +69,28 @@ _.extend(PageBuilder.prototype, {
 			templateFiles = grunt.file.expand(opts.templateFiles);
 		}
 
+		// Write the qunit files over
+		this._writeFile(qunitStyle, this._readFile(opts.qunitCss));
+		this._writeFile(qunitScript, this._readFile(opts.qunitJs));
+		this._writeFile(qunitBridgeScript, this._readFile(opts.qunitBridge));
+
 		var pageData = {
 			title: opts.pageTitle || "tests",
-			style: qunitStyle,
+			style: "<link href='js/qunit/qunit.css' rel='stylesheet' type='test/css' />",
 			script: {
-				qunit: qunitScript,
-				qunitBridge: qunitBridgeScript,
+				qunit: "<script src='js/qunit/qunit.js'></script>",
+				qunitBridge: "<script src='js/qunit/qunitBridge.js'></script>",
 				header: opts.headerScript || ""
 			}
 		};
 
 		var	addIncludeContents = function(includePath, cb) {
-				var includeContents = self._readFile(includePath),
-					filename = path.basename(path.dirname(includePath)) + "/" + path.basename(includePath);
+				// Will be dirname/filename
+				var	filename = path.basename(path.dirname(includePath)) + path.sep + path.basename(includePath);
 
-				cb(null, "<script data-filename='" + filename + "'>\n" + includeContents + "\n</script>\n");
+				self._writeFile(self._getTempJsAssetPath("includes", filename), self._readFile(includePath));
+
+				cb(null, "<script src='js/includes/" + filename + "'></script>");
 			};
 
 		// Load all the include files.
@@ -78,10 +102,11 @@ _.extend(PageBuilder.prototype, {
 			pageData.script.includes = includeTags;
 
 			var addTestContents = function(testPath, cb) {
-				var testContents = self._readFile(testPath),
-					filename = path.basename(path.dirname(testPath)) + "/" + path.basename(testPath);
+				var filename = path.basename(path.dirname(testPath)) + path.sep + path.basename(testPath);
 
-				cb(null, "<script data-filename='" + filename + "'>\n" + testContents + "\n</script>\n");
+				self._writeFile(self._getTempJsAssetPath("tests", filename), self._readFile(testPath));
+
+				cb(null, "<script src='js/tests/" + filename + "'></script>");
 			};
 
 			// Load all the test file contents
