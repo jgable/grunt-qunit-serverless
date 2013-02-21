@@ -133,6 +133,8 @@ PhantomQUnitRunner.prototype = {
 	},
 
 	_qunit_log: function(result, actual, expected, message, source) {
+		message = message || "?";
+		
 		if(result) {
 			// An assertion passed
 			this._verboseLog("   " + statuses.success + " " + message.grey);
