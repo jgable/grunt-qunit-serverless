@@ -133,7 +133,7 @@ PhantomQUnitRunner.prototype = {
 	},
 
 	_qunit_log: function(result, actual, expected, message, source) {
-		message = message || "?";
+		message = message || (result ? "okay" : "not okay");
 		
 		if(result) {
 			// An assertion passed

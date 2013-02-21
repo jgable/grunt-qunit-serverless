@@ -9,10 +9,6 @@
   <script>
   <%= script.header %>
   </script>
-</head>
-<body>
-  <div id="qunit"></div>
-  <div id="qunit-fixture"></div>
   <!-- Libs -->
   <% _.each(script.includes, function(includeTag) { %> <%= includeTag %> <% }); %>
   <!-- QUnit -->
@@ -25,6 +21,10 @@
   </script>
   <!-- Tests -->
   <% _.each(script.tests, function(testTag) { %> <%= testTag %> <% }); %>
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <!-- Templates -->
   <% _.each(script.templates, function(template) { %> <%= template %> <% }); %>
 </body>

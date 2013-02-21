@@ -53,7 +53,7 @@ _.extend(PageBuilder.prototype, {
 		}
 
 		var pageData = {
-			title: "tests",
+			title: opts.pageTitle || "tests",
 			style: qunitStyle,
 			script: {
 				qunit: qunitScript,
@@ -63,9 +63,10 @@ _.extend(PageBuilder.prototype, {
 		};
 
 		var	addIncludeContents = function(includePath, cb) {
-				var includeContents = self._readFile(includePath);
+				var includeContents = self._readFile(includePath),
+					filename = path.basename(path.dirname(includePath)) + "/" + path.basename(includePath);
 
-				cb(null, "<script>\n" + includeContents + "\n</script>\n");
+				cb(null, "<script data-filename='" + filename + "'>\n" + includeContents + "\n</script>\n");
 			};
 
 		// Load all the include files.
@@ -77,9 +78,10 @@ _.extend(PageBuilder.prototype, {
 			pageData.script.includes = includeTags;
 
 			var addTestContents = function(testPath, cb) {
-				var testContents = self._readFile(testPath);
+				var testContents = self._readFile(testPath),
+					filename = path.basename(path.dirname(testPath)) + "/" + path.basename(testPath);
 
-				cb(null, "<script>\n" + testContents + "\n</script>\n");
+				cb(null, "<script data-filename='" + filename + "'>\n" + testContents + "\n</script>\n");
 			};
 
 			// Load all the test file contents
