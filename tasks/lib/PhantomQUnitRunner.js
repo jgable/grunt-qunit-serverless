@@ -2,7 +2,6 @@
 	Portions of this code taken from grunt-lib-qunit; https://github.com/gruntjs/grunt-contrib-qunit 
 */
 
-
 var grunt = require("grunt");
 
 var _ = grunt.util._;
