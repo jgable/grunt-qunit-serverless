@@ -112,8 +112,6 @@ describe "PageBuilder", ->
 
 			should.exist pageContents, "pageContents"
 
-			console.log pageUrl
-
 			fs.exists pageUrl, (exists) ->
 				exists.should.equal true
 
