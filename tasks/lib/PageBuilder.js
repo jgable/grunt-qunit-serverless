@@ -62,52 +62,48 @@ _.extend(PageBuilder.prototype, {
 			}
 		};
 
-		var includeContents = "",
-			addIncludeContents = function(includePath, cb) {
-				includeContents += self._readFile(includePath) + "\n\n";
+		var	addIncludeContents = function(includePath, cb) {
+				var includeContents = self._readFile(includePath);
 
-				cb();
+				cb(null, "<script>\n" + includeContents + "\n</script>\n");
 			};
 
 		// Load all the include files.
-		async.forEach(includeFiles, addIncludeContents, function(err) {
+		async.map(includeFiles, addIncludeContents, function(err, includeTags) {
 			if(err) {
 				return done(err);
 			}
 
-			pageData.script.includes = includeContents;
+			pageData.script.includes = includeTags;
 
-			var testContents = "",
-			addTestContents = function(testPath, cb) {
-				testContents += self._readFile(testPath) + "\n\n";
+			var addTestContents = function(testPath, cb) {
+				var testContents = self._readFile(testPath);
 
-				cb();
+				cb(null, "<script>\n" + testContents + "\n</script>\n");
 			};
 
 			// Load all the test file contents
-			async.forEach(testFiles, addTestContents, function(err) {
+			async.map(testFiles, addTestContents, function(err, testTags) {
 				if(err) {
 					return done(err);
 				}
 
-				pageData.script.tests = testContents;
+				pageData.script.tests = testTags;
 
-				var	templateContents = [],
-					addTemplateContents = function(templatePath, cb) {
-						var fileName = templateNamer(templatePath);
+				var	addTemplateContents = function(templatePath, cb) {
+						var fileName = templateNamer(templatePath),
+							tag = "<script type='text/html' id='" + fileName + "'>\n" + self._readFile(templatePath) + "\n</script>\n";
 
-						templateContents.push("<script type='text/html' id='" + fileName + "'>\n" + self._readFile(templatePath) + "\n</script>\n");
-
-						cb();
+						cb(null, tag);
 					};
 
 				// Load all the templateFile contents
-				async.forEach(templateFiles, addTemplateContents, function(err) {
+				async.map(templateFiles, addTemplateContents, function(err, templateTags) {
 					if(err) {
 						return done(err);
 					}
 
-					pageData.script.templates = templateContents;
+					pageData.script.templates = templateTags;
 
 					var pageHtml = qunitPage(pageData),
 						pagePath = self._getTempFilePath();

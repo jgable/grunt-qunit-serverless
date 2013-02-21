@@ -14,9 +14,7 @@
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
   <!-- Libs -->
-  <script>
-  <%= script.includes %>
-  </script>
+  <% _.each(script.includes, function(includeTag) { %> <%= includeTag %> <% }); %>
   <!-- QUnit -->
   <script>
   <%= script.qunit %>
@@ -26,9 +24,7 @@
   <%= script.qunitBridge %>
   </script>
   <!-- Tests -->
-  <script>
-  <%= script.tests %>
-  </script>
+  <% _.each(script.tests, function(testTag) { %> <%= testTag %> <% }); %>
   <!-- Templates -->
   <% _.each(script.templates, function(template) { %> <%= template %> <% }); %>
 </body>
