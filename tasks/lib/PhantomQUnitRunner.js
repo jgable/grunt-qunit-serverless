@@ -78,7 +78,7 @@ PhantomQUnitRunner.prototype = {
 	},
 
 	_qunit_moduleStart: function(name) {
-		this._log(name + ":");
+		this._log("  " + name + ":");
 		this.state.currentModule = name;
 		this.state.modules[name] = this.state.modules[name] || {
 			totals: null,
@@ -103,7 +103,7 @@ PhantomQUnitRunner.prototype = {
 		passed = "" + passed;
 		total = "" + total;
 
-		this._log(" " + moduleStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ")");
+		this._log("    " + moduleStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ")");
 		this._log("");
 		
 		this.state.currentModule = null;
@@ -111,11 +111,13 @@ PhantomQUnitRunner.prototype = {
 
 	_qunit_testStart: function(name) {
 		this.state.currentTest = name;
-		this._verboseLog(" - " + name);
+		this.state.testStart = new Date().getTime();
+		this._verboseLog("    - " + name);
 	},
 
 	_qunit_testDone: function(name, failed, passed, total) {
-		var moduleName = this.state.currentModule || "unnamed";
+		var moduleName = this.state.currentModule || "unnamed",
+			elapsed = (new Date().getTime()) - this.state.testStart;
 
 		this.state.modules[moduleName].tests[name] = {
 			name: name,
@@ -128,9 +130,18 @@ PhantomQUnitRunner.prototype = {
 		passed = "" + passed;
 		total = "" + total;
 
-		var testStatus = passed === total ? statuses.success : statuses.fail;
+		var testStatus = passed === total ? statuses.success : statuses.fail,
+			warn = "(" + elapsed + "ms)";
 
-		this._verboseLog("   " + testStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ")");
+		if (elapsed <= 100) {
+			warn = "";
+		} else if (elapsed > 500) {
+			warn = warn.red;
+		} else if (elapsed > 100) {
+			warn = warn.yellow;
+		}
+
+		this._verboseLog("      " + testStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ") " + warn);
 	},
 
 	_qunit_log: function(result, actual, expected, message, source) {
@@ -138,17 +149,17 @@ PhantomQUnitRunner.prototype = {
 		
 		if(result) {
 			// An assertion passed
-			this._verboseLog("   " + statuses.success + " " + message.grey);
+			this._verboseLog("      " + statuses.success + " " + message.grey);
 			return;
 		}
 
-		this._verboseLog("   " + statuses.fail + " " + message.grey);
+		this._verboseLog("      " + statuses.fail + " " + message.grey);
 		if(actual && expected) {
-			this._verboseLog("     - " + "Actual:   ".grey + actual);
-			this._verboseLog("     - " + "Expected: ".grey + expected);
+			this._verboseLog("        - " + "Actual:   ".grey + actual);
+			this._verboseLog("        - " + "Expected: ".grey + expected);
 		}
 		if(source) {
-			this._verboseLog("     - " + "Source: ".grey + source.replace(/ {4}(at)/g, '  $1').magenta);
+			this._verboseLog("        - " + "Source: ".grey + source.replace(/ {4}(at)/g, '  $1').magenta);
 		}
 	},
 
@@ -168,9 +179,9 @@ PhantomQUnitRunner.prototype = {
 		total = "" + total;
 
 		duration = ((duration / 100)|0) / 10;
-		duration = duration + " seconds";
+		duration = "" + duration + " seconds";
 		
-		this._log("Tests Complete: " + totalStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ") in " + duration);
+		this._log("  Tests Complete: " + totalStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ") in " + duration);
 	},
 
 	_phantom_failLoad: function(url) {
@@ -185,6 +196,11 @@ PhantomQUnitRunner.prototype = {
 
 	run: function(pageUrl, done) {
 		var self = this;
+
+		this._verboseLog("Loading QUnit Page at: " + pageUrl);
+
+		// Give us some space
+		this._log("");
 
 		this.phantomjs.spawn(pageUrl, {
 

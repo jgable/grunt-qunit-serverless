@@ -1,6 +1,6 @@
 
 (function() {
-	module("module fail");
+	module("Module fail");
 
 	test("sample test 3", function() {
 		ok(false, "loaded sample test 3");
