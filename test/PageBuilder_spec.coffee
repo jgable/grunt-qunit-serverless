@@ -30,7 +30,7 @@ describe "PageBuilder", ->
 		should.exist result
 
 		# Check that the directory exists already so we can write to it.
-		fs.exists path.dirname(result), (exists) ->
+		fs.exists path.dirname(path.basename(result)), (exists) ->
 			exists.should.equal true
 
 			done()

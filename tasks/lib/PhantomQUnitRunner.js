@@ -104,6 +104,7 @@ PhantomQUnitRunner.prototype = {
 		total = "" + total;
 
 		this._log(" " + moduleStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ")");
+		this._log("");
 		
 		this.state.currentModule = null;
 	},
@@ -166,16 +167,9 @@ PhantomQUnitRunner.prototype = {
 		passed = "" + passed;
 		total = "" + total;
 
-		duration = (duration / 1000)|0;
-
-		if (duration === 0) {
-			duration = "less than a second";
-		} else if (duration === 1) {
-			duration = "one second";
-		} else if (duration > 1) {
-			duration = duration + " seconds";
-		}
-
+		duration = ((duration / 100)|0) / 10;
+		duration = duration + " seconds";
+		
 		this._log("Tests Complete: " + totalStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ") in " + duration);
 	},
 

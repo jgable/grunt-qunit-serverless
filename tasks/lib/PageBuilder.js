@@ -36,9 +36,6 @@ _.extend(PageBuilder.prototype, {
 	_getTempFilePath: function() {
 		var filePath = path.join(this.tmpDir, this.idtag, "qunit-tests.html");
 
-		// To ensure the existence of the directory
-		grunt.file.write(filePath, "");
-
 		return filePath;
 	},
 
