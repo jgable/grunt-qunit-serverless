@@ -78,7 +78,7 @@ PhantomQUnitRunner.prototype = {
 	},
 
 	_qunit_moduleStart: function(name) {
-		this._log("  " + name + ":");
+		this._log("  " + name);
 		this.state.currentModule = name;
 		this.state.modules[name] = this.state.modules[name] || {
 			totals: null,
@@ -103,7 +103,6 @@ PhantomQUnitRunner.prototype = {
 		passed = "" + passed;
 		total = "" + total;
 
-		this._log("    " + moduleStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ")");
 		this._log("");
 		
 		this.state.currentModule = null;
@@ -117,7 +116,9 @@ PhantomQUnitRunner.prototype = {
 
 	_qunit_testDone: function(name, failed, passed, total) {
 		var moduleName = this.state.currentModule || "unnamed",
-			elapsed = (new Date().getTime()) - this.state.testStart;
+			elapsed = (new Date().getTime()) - this.state.testStart,
+			testStatus = passed === total ? statuses.success : statuses.fail,
+			warn = "(" + elapsed + "ms)";
 
 		this.state.modules[moduleName].tests[name] = {
 			name: name,
@@ -130,9 +131,6 @@ PhantomQUnitRunner.prototype = {
 		passed = "" + passed;
 		total = "" + total;
 
-		var testStatus = passed === total ? statuses.success : statuses.fail,
-			warn = "(" + elapsed + "ms)";
-
 		if (elapsed <= 100) {
 			warn = "";
 		} else if (elapsed > 500) {
@@ -141,7 +139,11 @@ PhantomQUnitRunner.prototype = {
 			warn = warn.yellow;
 		}
 
-		this._verboseLog("      " + testStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ") " + warn);
+		if(!grunt.option("verbose")) {
+			this._log("    " + testStatus + " " + name.grey + " " + warn);
+		} else {
+			this._verboseLog("      " + testStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ") " + warn);
+		}
 	},
 
 	_qunit_log: function(result, actual, expected, message, source) {
