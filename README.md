@@ -7,7 +7,15 @@ A serverless version of the [grunt-contrib-qunit](https://github.com/gruntjs/gru
 
     npm install grunt-qunit-serverless --save
 
-## Example
+## Reporting
+
+#### Normal
+[![Normal Logging](http://jgable-hosting.s3.amazonaws.com/qunit-serverless-basic-logging.png)](http://jgable-hosting.s3.amazonaws.com/qunit-serverless-basic-logging.png)
+
+#### Verbose
+[![Verbose Logging](http://jgable-hosting.s3.amazonaws.com/qunit-serverless-verbose-logging.png)](http://jgable-hosting.s3.amazonaws.com/qunit-serverless-verbose-logging.png)
+
+## Example Config
 
     var cfg = {
     	
