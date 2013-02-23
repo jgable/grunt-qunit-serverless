@@ -35,7 +35,7 @@ A serverless version of the [grunt-contrib-qunit](https://github.com/gruntjs/gru
     
     grunt.loadNpmTasks("grunt-qunit-serverless");
     
-    grunt.registerTask("default", ["qunit-serverless:test"]);
+    grunt.registerTask("default", ["qunit-serverless"]);
 
 ## Options
 
