@@ -71,6 +71,39 @@ A `grunt.file.expand(...)` argument array describing the test files to include.
 
 A `grunt.file.expand(...)` argument array describing template files you'd like to include after the test files.
 
+## Reporters
+
+As of version 0.2.0 you can build your own reporter based on a simple interface shown below, the default is a Spec based reported similar to the [Mocha Spec](http://visionmedia.github.com/mocha/#reporters) reporter.
+
+```javascript
+{
+    start: function(pageUrl) {
+
+    },
+    complete: function(state) {
+
+    },
+    moduleStart: function(name) {
+
+    },
+    moduleEnd: function(name, failed, passed, total) {
+
+    },
+    testStart: function(name) {
+
+    },
+    testDone: function(name) {
+
+    },
+    assertionPassed: function(message) {
+
+    },
+    assertionFailed: function(actual, expected, message, source) {
+
+    }
+}
+```
+
 ## License
 
 This library is licensed under the MIT License.  Portions of this code were taken from the [grunt-contrib-qunit](https://github.com/gruntjs/grunt-contrib-qunit) task.

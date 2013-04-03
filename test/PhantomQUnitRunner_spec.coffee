@@ -6,13 +6,17 @@ should = require "should"
 
 PageBuilder = require "../tasks/lib/PageBuilder"
 PhantomQUnitRunner = require "../tasks/lib/PhantomQUnitRunner"
+BaseReporter = require "../tasks/lib/reporter/base"
 
 describe "PhantomQUnitRunner", ->
 	mockPhantom = undefined
+	mockReporter = undefined
 
 	beforeEach ->
 		mockPhantom = new EventEmitter
 		mockPhantom.halt = -> return
+
+		mockReporter = new BaseReporter
 
 	it "resets state", ->
 		runner = new PhantomQUnitRunner mockPhantom
@@ -65,14 +69,12 @@ describe "PhantomQUnitRunner", ->
 		verbose = []
 		log = []
 
-		runner._verboseLog = (msg) -> 
+		runner.reporter.verbose = (msg) -> 
 			#console.log "v: " + msg
 			verbose.push msg
-		runner._log = (msg) -> 
+		runner.reporter.log = (msg) -> 
 			#console.log "c: " + msg
 			log.push msg
-
- 		#console.log ""
  
 		mockPhantom.emit "qunit.moduleStart", "test module"
 		mockPhantom.emit "qunit.testStart", "test1"
@@ -85,7 +87,7 @@ describe "PhantomQUnitRunner", ->
 		mockPhantom.emit "qunit.moduleDone", "test module", 0, 3, 3
 		mockPhantom.emit "qunit.done", 0, 3, 3, 828
 
-		verbose.length.should.equal 5
+		verbose.length.should.equal 3
 		log.length.should.equal 5
 
 		should.exist runner.state.modules["test module"]
@@ -106,10 +108,8 @@ describe "PhantomQUnitRunner", ->
 
 			phantomjs = require('grunt-lib-phantomjs').init(grunt)
 
-			runner = new PhantomQUnitRunner phantomjs
-
-			# Void out the logs
-			runner._log = runner._verboseLog = -> return
+			runner = new PhantomQUnitRunner phantomjs, 
+				reporter: mockReporter
 
 			runner.run pageUrl, (err, testResults) ->
 				return done(err) if err

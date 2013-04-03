@@ -4,8 +4,10 @@
 
 var grunt = require("grunt");
 
-var _ = grunt.util._;
+var _ = grunt.util._,
+	SpecReporter = require("./reporter/spec");
 
+// TODO: Remove
 var statuses = {
 	fail: "✖".red,
 	success: "✓".green
@@ -17,21 +19,19 @@ var PhantomQUnitRunner = function(phantomjs, opts) {
 	this.phantomjs = phantomjs;
 	this.opts = _.defaults(opts, {
 		statuses: statuses,
+		reporter: new SpecReporter({
+			logLevel: grunt.option("verbose") ? 1 : 0
+		}),
 		timeout: 5000
 	});
+
+	this.reporter = this.opts.reporter;
 
 	this._resetState();
 	this._addPhantomHandlers();
 };
 
 PhantomQUnitRunner.prototype = {
-	_verboseLog: function(msg) {
-		grunt.verbose.writeln(msg);
-	},
-	_log: function(msg) {
-		grunt.log.writeln(msg);
-	},
-
 	_resetState: function() {
 		this.state = {
 			failed: 0,
@@ -78,17 +78,16 @@ PhantomQUnitRunner.prototype = {
 	},
 
 	_qunit_moduleStart: function(name) {
-		this._log("  " + name);
 		this.state.currentModule = name;
 		this.state.modules[name] = this.state.modules[name] || {
 			totals: null,
 			tests: {}
 		};
+
+		this.reporter.moduleStart(name);
 	},
 	
 	_qunit_moduleDone: function(name, failed, passed, total) {
-		var moduleStatus = passed === total ? statuses.success : statuses.fail;
-		
 		this.state.modules[name].totals = this.state.modules[name].totals || {
 			failed: 0,
 			passed: 0,
@@ -99,11 +98,7 @@ PhantomQUnitRunner.prototype = {
 		this.state.modules[name].totals.passed += passed;
 		this.state.modules[name].totals.total += total;
 
-		failed = "" + failed;
-		passed = "" + passed;
-		total = "" + total;
-
-		this._log("");
+		this.reporter.moduleDone(name, failed, passed, total);
 		
 		this.state.currentModule = null;
 	},
@@ -111,14 +106,13 @@ PhantomQUnitRunner.prototype = {
 	_qunit_testStart: function(name) {
 		this.state.currentTest = name;
 		this.state.testStart = new Date().getTime();
-		this._verboseLog("    - " + name);
+		
+		this.reporter.testStart(name);
 	},
 
 	_qunit_testDone: function(name, failed, passed, total) {
 		var moduleName = this.state.currentModule || "unnamed",
-			elapsed = (new Date().getTime()) - this.state.testStart,
-			testStatus = passed === total ? statuses.success : statuses.fail,
-			warn = "(" + elapsed + "ms)";
+			elapsed = (new Date().getTime()) - this.state.testStart;
 
 		this.state.modules[moduleName].tests[name] = {
 			name: name,
@@ -127,23 +121,9 @@ PhantomQUnitRunner.prototype = {
 			total: total
 		};
 
-		failed = "" + failed;
-		passed = "" + passed;
-		total = "" + total;
+		this.reporter.testDone(name, failed, passed, total, elapsed);
 
-		if (elapsed <= 100) {
-			warn = "";
-		} else if (elapsed > 500) {
-			warn = warn.red;
-		} else if (elapsed > 100) {
-			warn = warn.yellow;
-		}
-
-		if(!grunt.option("verbose")) {
-			this._log("    " + testStatus + " " + name.grey + " " + warn);
-		} else {
-			this._verboseLog("      " + testStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ") " + warn);
-		}
+		this.state.currentTest = null;
 	},
 
 	_qunit_log: function(result, actual, expected, message, source) {
@@ -151,17 +131,10 @@ PhantomQUnitRunner.prototype = {
 		
 		if(result) {
 			// An assertion passed
-			this._verboseLog("      " + statuses.success + " " + message.grey);
-			return;
-		}
-
-		this._verboseLog("      " + statuses.fail + " " + message.grey);
-		if(actual && expected) {
-			this._verboseLog("        - " + "Actual:   ".grey + actual);
-			this._verboseLog("        - " + "Expected: ".grey + expected);
-		}
-		if(source) {
-			this._verboseLog("        - " + "Source: ".grey + source.replace(/ {4}(at)/g, '  $1').magenta);
+			this.reporter.assertionPassed(message);
+		} else {
+			// Assertion failed
+			this.reporter.assertionFailed(actual, expected, message, source);	
 		}
 	},
 
@@ -169,21 +142,12 @@ PhantomQUnitRunner.prototype = {
 		// Stop the phantom spawn.
 		this.phantomjs.halt();
 
-		var totalStatus = passed === total ? statuses.success : statuses.fail;
-
 		this.state.failed = failed;
 		this.state.passed = passed;
 		this.state.total = total;
 		this.state.duration = duration;
 
-		failed = "" + failed;
-		passed = "" + passed;
-		total = "" + total;
-
-		duration = ((duration / 100)|0) / 10;
-		duration = "" + duration + " seconds";
-		
-		this._log("  Tests Complete: " + totalStatus + " (" + failed.red + " / " + passed.green + " / " + total.cyan + ") in " + duration);
+		this.reporter.complete(this.state);
 	},
 
 	_phantom_failLoad: function(url) {
@@ -199,10 +163,7 @@ PhantomQUnitRunner.prototype = {
 	run: function(pageUrl, done) {
 		var self = this;
 
-		this._verboseLog("Loading QUnit Page at: " + pageUrl);
-
-		// Give us some space
-		this._log("");
+		this.reporter.start(pageUrl);
 
 		this.phantomjs.spawn(pageUrl, {
 
