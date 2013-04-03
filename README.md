@@ -51,6 +51,10 @@ The path to the qunit.css file you would like to use.  Otherwise, we will defaul
 
 The path to the PhantomJS to QUnit bridge script file you would like to use.  Otherwise, we will default to noe that is included with the npm package that is based on one from [grunt-contrib-qunit](https://github.com/gruntjs/grunt-contrib-qunit/blob/master/phantomjs/bridge.js).
 
+#### qunit-filter
+
+A test filter to pass to the qunit runner; can limit the number of tests you run.  Also can be passed in via command line as `--qunit-filter="something"`.
+
 #### pageTemplate
 
 The path to an [underscore template](http://underscorejs.org/#template) file that will build the qunit test page.  Defaults to one that is included with the npm package.

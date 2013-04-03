@@ -44,6 +44,7 @@ _.extend(SpecReporter.prototype, {
 			totalMsg = "  " + failed.red + " of ".red + total.red + " tests failed".red + ":".grey;
 		}
 		
+		this.log("");
 		this.log(totalMsg);
 
 		if(this._failedTestCount) {

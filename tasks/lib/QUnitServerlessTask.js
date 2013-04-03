@@ -19,7 +19,9 @@ _.extend(QUnitServerlessTask.prototype, IncludesBase.prototype);
 
 _.extend(QUnitServerlessTask.prototype, {
 	setOptions: function(task) {
-		this.options = task.options(this._includeDefaults());
+		this.options = task.options(this._includeDefaults(), { 
+			"qunit-filter": grunt.option("qunit-filter") 
+		});
 	},
 
 	run: function() {
@@ -35,6 +37,10 @@ _.extend(QUnitServerlessTask.prototype, {
 			}
 			
 			var runner = new PhantomQUnitRunner(self.phantomjs, self.options);
+
+			if(self.options["qunit-filter"]) {
+				fileCreatedPath += "?filter=" + self.options["qunit-filter"];
+			}
 
 			// Start the phantom runner with the file path to the temp file
 			runner.run(fileCreatedPath, function(err, results) {

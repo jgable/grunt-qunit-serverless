@@ -88,7 +88,7 @@ describe "PhantomQUnitRunner", ->
 		mockPhantom.emit "qunit.done", 0, 3, 3, 828
 
 		verbose.length.should.equal 3
-		log.length.should.equal 5
+		log.length.should.equal 6
 
 		should.exist runner.state.modules["test module"]
 		should.exist runner.state.modules["test module"].tests.test1

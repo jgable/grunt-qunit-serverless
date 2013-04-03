@@ -88,6 +88,10 @@ PhantomQUnitRunner.prototype = {
 	},
 	
 	_qunit_moduleDone: function(name, failed, passed, total) {
+		if(!this.state.modules[name]) {
+			return;
+		}
+		
 		this.state.modules[name].totals = this.state.modules[name].totals || {
 			failed: 0,
 			passed: 0,
