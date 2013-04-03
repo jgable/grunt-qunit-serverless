@@ -14,10 +14,6 @@ describe "PhantomQUnitRunner", ->
 		mockPhantom = new EventEmitter
 		mockPhantom.halt = -> return
 
-	it "exists", ->
-		should.exist PhantomQUnitRunner
-		should.exist new PhantomQUnitRunner mockPhantom
-
 	it "resets state", ->
 		runner = new PhantomQUnitRunner mockPhantom
 

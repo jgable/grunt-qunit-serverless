@@ -12,11 +12,6 @@ describe "QUnitServerlessTask", ->
 	makeFakeTask = ->
 		options: -> {}
 
-	it "exists", ->
-		should.exist QUnitServerlessTask, "exists"
-
-		should.exist new QUnitServerlessTask(makeFakeTask()), "instantiates"
-
 	it "can load include paths", ->
 
 		task = new QUnitServerlessTask(makeFakeTask())
