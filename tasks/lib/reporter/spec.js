@@ -87,7 +87,7 @@ _.extend(SpecReporter.prototype, {
 			testPassed = passed === total,
 			testStatus = testPassed ? this.opts.statuses.success : this.opts.statuses.fail,
 			warn = "(" + elapsed + "ms)",
-			msg = "    " + testStatus + " " + name.grey + " " + warn;
+			msg = "    " + testStatus + " " + name.grey + " ";
 
 		failed = "" + failed;
 		passed = "" + passed;
@@ -100,6 +100,8 @@ _.extend(SpecReporter.prototype, {
 		} else if (elapsed > 100) {
 			warn = warn.yellow;
 		}
+
+		msg += warn;
 
 		this.log(msg);
 
