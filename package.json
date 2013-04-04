@@ -1,6 +1,6 @@
 {
   "name": "grunt-qunit-serverless",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A serverless version of the grunt-qunit task",
   "main": "tasks/qunit-serverless.js",
   "scripts": {
@@ -30,6 +30,6 @@
   "dependencies": {
     "grunt": "~0.4.0",
     "node-uuid": "~1.4.0",
-    "grunt-lib-phantomjs": "~0.1.0"
+    "grunt-lib-phantomjs": "~0.3.0"
   }
 }
