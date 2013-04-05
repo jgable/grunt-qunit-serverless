@@ -1,6 +1,6 @@
 {
   "name": "grunt-qunit-serverless",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A serverless version of the grunt-qunit task",
   "main": "tasks/qunit-serverless.js",
   "scripts": {

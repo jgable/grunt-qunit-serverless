@@ -70,4 +70,8 @@ QUnitServerlessTask.registerWithGrunt = function(grunt) {
 	});
 };
 
+QUnitServerlessTask.registerWithGrunt.PhantomQUnitRunner = PhantomQUnitRunner;
+QUnitServerlessTask.registerWithGrunt.Reporters = PhantomQUnitRunner.reporters;
+
+
 module.exports = QUnitServerlessTask;

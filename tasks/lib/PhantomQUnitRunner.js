@@ -5,6 +5,7 @@
 var grunt = require("grunt");
 
 var _ = grunt.util._,
+	BaseReporter = require("./reporter/base"),
 	SpecReporter = require("./reporter/spec");
 
 // TODO: Remove
@@ -188,6 +189,12 @@ PhantomQUnitRunner.prototype = {
 	dispose: function() {
 		this._clearPhantomHandlers();
 	}
+};
+
+// For others to base their reporters off of
+PhantomQUnitRunner.reporters = {
+	Base: BaseReporter,
+	Spec: SpecReporter
 };
 
 module.exports = PhantomQUnitRunner;

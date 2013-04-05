@@ -33,4 +33,30 @@ describe "QUnitServerlessTask", ->
 		result.qunitJs.should.equal task._includeFilePath("qunit.js")
 		result.qunitBridge.should.equal task._includeFilePath("qunit-bridge.js")
 
-		
+	it "can register itself with grunt", ->
+
+		should.exist QUnitServerlessTask.registerWithGrunt
+
+		calledWithName = null
+		calledWithFunc = null
+		fakeGrunt = 
+			registerMultiTask: (name, func) ->
+				calledWithName = name
+				calledWithFunc = func
+
+		QUnitServerlessTask.registerWithGrunt(fakeGrunt)
+
+		calledWithName.should.equal "qunit-serverless"
+		should.exist calledWithFunc
+
+	it "makes reporters classes available", ->
+
+		thing = require "../tasks/qunit-serverless"
+
+		should.exist thing.Reporters, "Reporters"
+
+		should.exist thing.Reporters.Base, "BaseReporter"
+		should.exist thing.Reporters.Spec, "SpecReporter"
+
+		should.exist new thing.Reporters.Base(), "BaseReporter instance"
+		should.exist new thing.Reporters.Spec(), "SpecReporter instance"
