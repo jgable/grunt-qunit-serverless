@@ -33,9 +33,8 @@ _.extend(SpecReporter.prototype, {
 
 		var failed = "" + state.failed,
 			passed = "" + state.passed,
-			total = "" + state.total;
-
-		var duration = "" + (((duration / 100)|0) / 10) + " seconds";
+			total = "" + state.total,
+			duration = "" + (((state.duration / 100)|0) / 10) + " seconds";
 
 		if(totalPassed) {
 			totalMsg = "  " + total.green + " tests complete ".green;
@@ -64,11 +63,10 @@ _.extend(SpecReporter.prototype, {
 		
 		this.log("");
 	},
+	
 	testStart: function(name) {
 		
 	},
-
-	
 	assertionPassed: function(message) {
 		this._currAssertions.push("      " + this.opts.statuses.success + " " + message.grey);
 	},
