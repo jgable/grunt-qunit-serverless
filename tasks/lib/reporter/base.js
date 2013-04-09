@@ -12,8 +12,6 @@ var defaults = {
 	statuses: statuses
 };
 
-
-
 var BaseReporter = function(opts) {
 	this.opts = _.defaults(opts, defaults);
 };

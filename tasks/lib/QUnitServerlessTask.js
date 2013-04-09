@@ -70,6 +70,7 @@ QUnitServerlessTask.registerWithGrunt = function(grunt) {
 	});
 };
 
+QUnitServerlessTask.registerWithGrunt.PageBuilder = PageBuilder;
 QUnitServerlessTask.registerWithGrunt.PhantomQUnitRunner = PhantomQUnitRunner;
 QUnitServerlessTask.registerWithGrunt.Reporters = PhantomQUnitRunner.reporters;
 
