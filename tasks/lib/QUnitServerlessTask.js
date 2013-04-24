@@ -23,29 +23,23 @@ _.extend(QUnitServerlessTask.prototype, {
 			"qunit-filter": grunt.option("qunit-filter") 
 		});
 	},
-	build: function(callback) {
-		var pageBuilder = new PageBuilder(this.options);
-		pageBuilder.build(callback);
-	},
 	run: function() {
 		var self = this,
 			done = this.async();
 
 		// Build the html page up and save it to a temp location, return a url to temp file.
-		self.build(function(err, fileCreatedPath) {
+		self._build(function(err, fileCreatedPath) {
 			if(err) {
 				grunt.fatal(err.message);
 				return done();
 			}
-			
-			var runner = new PhantomQUnitRunner(self.phantomjs, self.options);
 
-			if(self.options["qunit-filter"]) {
-				fileCreatedPath += "?filter=" + self.options["qunit-filter"];
+			if(self.options.buildOnly) {
+				grunt.log.writeln(fileCreatedPath);
+				return done();
 			}
-
-			// Start the phantom runner with the file path to the temp file
-			runner.run(fileCreatedPath, function(err, results) {
+			
+			self._runPhantom(fileCreatedPath, function(err, results) {
 				if(err) {
 					grunt.fatal(err.message);
 				}
@@ -57,6 +51,23 @@ _.extend(QUnitServerlessTask.prototype, {
 				done();
 			});
 		});
+	},
+	
+	_build: function(done) {
+		var pageBuilder = new PageBuilder(this.options);
+		
+		pageBuilder.build(done);
+	},
+
+	_runPhantom: function(fileCreatedPath, done) {
+		var runner = new PhantomQUnitRunner(this.phantomjs, this.options);
+
+		if(this.options["qunit-filter"]) {
+			fileCreatedPath += "?filter=" + this.options["qunit-filter"];
+		}
+
+		// Start the phantom runner with the file path to the temp file
+		runner.run(fileCreatedPath, done);
 	}
 });
 
@@ -65,22 +76,10 @@ QUnitServerlessTask.registerWithGrunt = function(grunt) {
 
 	var phantomjs = require('grunt-lib-phantomjs').init(grunt);
 
-	grunt.registerMultiTask("qunit-serverless", "Builds up an HTML page and runs it with PhantomJS", function(build) {
-		var task = new QUnitServerlessTask(this, phantomjs), done;
-		// handle the case where we only want to build the code
-		if( arguments.length === 0) {
-			task.run();
-		} else if( build === "build" ) {
-			done = this.async();
-			task.build(function(err, fileCreatePath){
-				if( err ) {
-					grunt.fatal( err.message );
-					return done();
-				}
-				grunt.log.writeln(fileCreatePath);
-				done();	
-			});
-		}
+	grunt.registerMultiTask("qunit-serverless", "Builds up an HTML page and runs it with PhantomJS", function() {
+		var task = new QUnitServerlessTask(this, phantomjs);
+
+		task.run();
 	});
 };
 

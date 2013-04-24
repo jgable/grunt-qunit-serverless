@@ -60,3 +60,29 @@ describe "QUnitServerlessTask", ->
 
 		should.exist new thing.Reporters.Base(), "BaseReporter instance"
 		should.exist new thing.Reporters.Spec(), "SpecReporter instance"
+
+	it "can build only", (done) ->
+		grunt.log.muted = true
+		
+		fakeGruntTask = makeFakeTask()
+		fakeGruntTask.options = ->
+			buildOnly: true
+		# pass back a wrap up function for async()
+		fakeGruntTask.async = -> 
+			->
+				buildCalls.should.equal 1
+				# TODO: Check grunt log output?
+				done()
+
+		task = new QUnitServerlessTask(fakeGruntTask)
+
+		buildCalls = 0
+		task._build = (buildDone) ->
+			buildCalls++
+			buildDone null, "/some/file/path"
+			
+
+		task._runPhantom = (filePath, done) ->
+			throw new Error "Should not call _runPhantom when build only is passed"
+
+		task.run()
