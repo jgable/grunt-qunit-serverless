@@ -75,6 +75,10 @@ A `grunt.file.expand(...)` argument array describing the test files to include.
 
 A `grunt.file.expand(...)` argument array describing template files you'd like to include after the test files.
 
+#### buildOnly
+
+A boolean value that when set to a truthy value indicates that only the html file should be built and its path output to the console.
+
 ## Reporters
 
 As of version 0.2.0 you can build your own reporter based on a simple interface shown below, the default is a Spec based reported similar to the [Mocha Spec](http://visionmedia.github.com/mocha/#reporters) reporter.
