@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 			all: ["tasks/**/*.js"]
 		},
 
-		simplemocha: {
+		mochacli: {
 			options: {
 				compilers: "coffee:coffee-script",
 				timeout: 3000,
@@ -43,8 +43,8 @@ module.exports = function(grunt) {
 	grunt.initConfig(cfg);
 
 	grunt.loadNpmTasks("grunt-contrib-jshint");
-	grunt.loadNpmTasks("grunt-simple-mocha");
+	grunt.loadNpmTasks("grunt-mocha-cli");
 	grunt.loadTasks("./tasks");
 
-	grunt.registerTask("default", ["jshint:all", "simplemocha:all", "qunit-serverless:test"]);
+	grunt.registerTask("default", ["jshint:all", "mochacli:all", "qunit-serverless:test"]);
 };

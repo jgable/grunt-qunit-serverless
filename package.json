@@ -1,6 +1,6 @@
 {
   "name": "grunt-qunit-serverless",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "A serverless version of the grunt-qunit task",
   "main": "tasks/qunit-serverless.js",
   "scripts": {
@@ -25,10 +25,12 @@
     "phantom": "~0.4.1",
     "mocha": "~1.8.1",
     "coffee-script": "~1.4.0",
-    "grunt-simple-mocha": "~0.3.2"
+    "grunt-mocha-cli": "~1.4.0"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.0"
   },
   "dependencies": {
-    "grunt": "~0.4.0",
     "node-uuid": "~1.4.0",
     "grunt-lib-phantomjs": "~0.3.0"
   }

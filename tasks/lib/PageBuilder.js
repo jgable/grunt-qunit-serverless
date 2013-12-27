@@ -87,7 +87,10 @@ _.extend(PageBuilder.prototype, {
 
 				self._writeFile(self._getTempJsAssetPath("includes", filename), self._readFile(includePath));
 
-				cb(null, "<script src='js/includes/" + filename + "'></script>");
+				cb(null, {
+					filename: 'js/includes/' + filename,
+					tag: "<script src='js/includes/" + filename + "'></script>"
+				});
 			};
 
 		// Load all the include files.
@@ -103,7 +106,10 @@ _.extend(PageBuilder.prototype, {
 
 				self._writeFile(self._getTempJsAssetPath("tests", filename), self._readFile(testPath));
 
-				cb(null, "<script src='js/tests/" + filename + "'></script>");
+				cb(null, {
+					filename: 'js/tests/' + filename,
+					tag: "<script src='js/tests/" + filename + "'></script>"
+				});
 			};
 
 			// Load all the test file contents
@@ -118,7 +124,10 @@ _.extend(PageBuilder.prototype, {
 						var fileName = templateNamer(templatePath),
 							tag = "<script type='text/html' id='" + fileName + "'>\n" + self._readFile(templatePath) + "\n</script>\n";
 
-						cb(null, tag);
+						cb(null, {
+							filename: fileName,
+							tag: tag
+						});
 					};
 
 				// Load all the templateFile contents

@@ -8,18 +8,18 @@
   <%= script.header %>
   </script>
   <!-- Libs -->
-  <% _.each(script.includes, function(includeTag) { %> <%= includeTag %> <% }); %>
+  <% _.each(script.includes, function(include) { %> <%= include.tag %> <% }); %>
   <!-- QUnit -->
   <%= script.qunit %>
   <!-- QUnit Bridge -->
   <%= script.qunitBridge %>
   <!-- Tests -->
-  <% _.each(script.tests, function(testTag) { %> <%= testTag %> <% }); %>
+  <% _.each(script.tests, function(test) { %> <%= test.tag %> <% }); %>
 </head>
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
   <!-- Templates -->
-  <% _.each(script.templates, function(template) { %> <%= template %> <% }); %>
+  <% _.each(script.templates, function(template) { %> <%= template.tag %> <% }); %>
 </body>
 </html>
