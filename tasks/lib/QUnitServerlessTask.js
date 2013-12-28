@@ -38,7 +38,21 @@ _.extend(QUnitServerlessTask.prototype, {
 				grunt.log.writeln(fileCreatedPath);
 				return done();
 			}
-			
+
+			if (self.options.connectUrl) {
+				// Trim trailing slashes
+				if (self.options.connectUrl.slice(-1) === '/') {
+					self.options.connectUrl = self.options.connectUrl.slice(0, -1);
+				}
+
+				// Build up the url from the tmp dir name and file name
+				fileCreatedPath = [
+					self.options.connectUrl,
+					path.basename(path.dirname(fileCreatedPath)),
+					path.basename(fileCreatedPath)
+				].join('/');
+			}
+
 			self._runPhantom(fileCreatedPath, function(err, results) {
 				if(err) {
 					grunt.fatal(err.message);
@@ -50,6 +64,7 @@ _.extend(QUnitServerlessTask.prototype, {
 
 				done();
 			});
+
 		});
 	},
 	

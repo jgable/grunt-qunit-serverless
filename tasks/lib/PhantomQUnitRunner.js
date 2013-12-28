@@ -32,7 +32,7 @@ var PhantomQUnitRunner = function(phantomjs, opts) {
 	this._addPhantomHandlers();
 };
 
-PhantomQUnitRunner.prototype = {
+_.extend(PhantomQUnitRunner.prototype, {
 	_resetState: function() {
 		this.state = {
 			failed: 0,
@@ -177,6 +177,10 @@ PhantomQUnitRunner.prototype = {
 			},
 
 			done: function(err) {
+				try {
+					self.dispose();	
+				} catch (ignore) { }
+				
 				if(err) {
 					return done(err);
 				}
@@ -189,7 +193,7 @@ PhantomQUnitRunner.prototype = {
 	dispose: function() {
 		this._clearPhantomHandlers();
 	}
-};
+});
 
 // For others to base their reporters off of
 PhantomQUnitRunner.reporters = {

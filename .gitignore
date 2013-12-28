@@ -12,4 +12,6 @@ logs
 results
 node_modules
 
+test/.build
+
 npm-debug.log

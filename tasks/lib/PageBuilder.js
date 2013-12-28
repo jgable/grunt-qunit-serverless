@@ -15,7 +15,7 @@ var PageBuilder = function(opts) {
 	this.opts = _.defaults({}, opts, this._includeDefaults());
 
 	this.idtag = uuid.v1();
-	this.tmpDir = os.tmpDir();
+	this.tmpDir = this.opts.tmpDir || os.tmpDir();
 };
 
 _.extend(PageBuilder.prototype, IncludesBase.prototype);
