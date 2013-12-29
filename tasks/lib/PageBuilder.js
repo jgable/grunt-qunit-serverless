@@ -47,6 +47,9 @@ _.extend(PageBuilder.prototype, {
 			qunitStyle = this._getTempJsAssetPath("qunit", "qunit.css"),
 			qunitScript = this._getTempJsAssetPath("qunit", "qunit.js"),
 			qunitBridgeScript = this._getTempJsAssetPath("qunit", "qunitBridge.js"),
+			filePather = opts.filePaths || function (filePath) {
+				return filePath.replace(process.cwd() + '/', '');
+			},
 			includeFiles = [],
 			testFiles = [],
 			templateFiles = [],
@@ -83,7 +86,7 @@ _.extend(PageBuilder.prototype, {
 
 		var	addIncludeContents = function(includePath, cb) {
 				// Will be dirname/filename
-				var	filename = path.basename(path.dirname(includePath)) + path.sep + path.basename(includePath);
+				var	filename = filePather(includePath, 'include');
 
 				self._writeFile(self._getTempJsAssetPath("includes", filename), self._readFile(includePath));
 
@@ -102,7 +105,7 @@ _.extend(PageBuilder.prototype, {
 			pageData.script.includes = includeTags;
 
 			var addTestContents = function(testPath, cb) {
-				var filename = path.basename(path.dirname(testPath)) + path.sep + path.basename(testPath);
+				var filename = filePather(testPath, 'test');
 
 				self._writeFile(self._getTempJsAssetPath("tests", filename), self._readFile(testPath));
 
