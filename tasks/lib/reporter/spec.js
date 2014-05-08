@@ -109,7 +109,7 @@ _.extend(SpecReporter.prototype, {
 		}
 
 		if(!testPassed) {
-			this._failedTestMsgs.push("1) " + this._currModule);
+			this._failedTestMsgs.push( ( this._failedTestCount+1 )+") " + this._currModule);
 			this._failedTestMsgs.push(msg);
 		}
 
