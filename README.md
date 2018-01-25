@@ -81,7 +81,7 @@ A boolean value that when set to a truthy value indicates that only the html fil
 
 ## Reporters
 
-As of version 0.2.0 you can build your own reporter based on a simple interface shown below, the default is a Spec based reported similar to the [Mocha Spec](http://visionmedia.github.com/mocha/#reporters) reporter.
+As of version 0.2.0 you can build your own reporter based on a simple interface shown below, the default is a Spec based reported similar to the [Mocha Spec](https://mochajs.org/#reporters) reporter.
 
 ```javascript
 {
